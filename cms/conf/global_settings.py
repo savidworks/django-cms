@@ -123,3 +123,6 @@ CMS_CACHE_PREFIX = 'cms-'
 # they are missing in the permission-merge2 branch
 CMS_PLUGIN_PROCESSORS = tuple()
 CMS_PLUGIN_CONTEXT_PROCESSORS = tuple()
+
+# django 1.4 will likely depricate ADMIN_MEDIA_PREFIX.  Set default using STATIC_URL.
+ADMIN_MEDIA_PREFIX = settings.STATIC_URL + '/admin/'
