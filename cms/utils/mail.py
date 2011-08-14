@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.mail import EmailMultiAlternatives
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from django.contrib import admin
 from django.contrib.sites.models import Site
 
 from cms.utils.urlutils import urljoin
@@ -15,8 +15,10 @@ def send_mail(subject, txt_template, to, context=None, html_template=None, fail_
     site = Site.objects.get_current()
     
     context = context or {}
+
+    root_path = reverse('admin:index')
     context.update({
-        'login_url': "http://%s" % urljoin(site.domain, admin.site.root_path),
+        'login_url': "http://%s" % urljoin(site.domain, root_path),
         'title': subject,
     })
     

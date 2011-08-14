@@ -668,13 +668,15 @@ class PageAdmin(ModelAdmin):
         else:
             languages = [x[0] for x in settings.CMS_LANGUAGES]
         
+        root_path = reverse('admin:index')
+
         context = {
             'title': cl.title,
             'is_popup': cl.is_popup,
             'cl': cl,
             'opts':opts,
             'has_add_permission': self.has_add_permission(request),
-            'root_path': self.admin_site.root_path,
+            'root_path': root_path,
             'app_label': app_label,
             'CMS_MEDIA_URL': settings.CMS_MEDIA_URL,
             'softroot': settings.CMS_SOFTROOT,
