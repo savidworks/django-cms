@@ -17,7 +17,8 @@
 
 /* #TOOLBAR/reset# */
 .cms_reset div, .cms_reset p, .cms_reset a, .cms_reset a:hover, .cms_reset a:active, .cms_reset a:focus,
-.cms_reset form, .cms_reset fieldset, .cms_reset label, .cms_reset input, .cms_reset textarea, .cms_reset select {
+.cms_reset form, .cms_reset fieldset, .cms_reset label, .cms_reset input, .cms_reset textarea, .cms_reset select,
+.cms_reset ul, .cms_reset li {
 	font:normal 13px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif; color:#666; font-weight:normal; text-decoration:none;
 	text-align:left; border:none; padding:0; margin:0; outline:none; }
 
@@ -66,9 +67,9 @@
 .cms_toolbar-item_logo .cms_toolbar-item_logo-link:hover { background-position:-120px top; }
 
 /* #TOOLBAR/items/login# */
-#cms_toolbar-item_login label { float:left; cursor:pointer; padding:4px 10px 0 0; }
+#cms_toolbar-item_login label { float:left; cursor:pointer; padding:4px 10px 0 0; width: auto; }
 #cms_toolbar-item_login div { float:left; }
-#cms_toolbar-item_login div input { color:#000; width:150px; border:1px solid #ddd; padding:4px 5px; margin-right:10px;
+#cms_toolbar-item_login div input { color:#000; width:150px; border:1px solid #ddd; padding:4px 5px; margin-right:10px; margin-top:0;
 	-webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }
 #cms_toolbar-item_login div input:hover { border:1px solid #999; }
 .cms_toolbar_error input[type=text], .cms_toolbar_error input[type=password] { border:1px solid #f99 !important; }

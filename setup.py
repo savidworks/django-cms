@@ -4,7 +4,7 @@ import cms
 
         
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Environment :: Web Environment',
     'Framework :: Django',
     'Intended Audience :: Developers',
@@ -29,9 +29,10 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=[
         'Django>=1.2.5',
-        'django-classy-tags>=0.3.3',
+        'django-classy-tags>=0.3.4.1',
         'south>=0.7.2',
-        'django-mptt>=0.4.2',
+        'html5lib',
+        'django-mptt==0.4.2',
         'django-sekizai>=0.4.2',
     ],
     packages=find_packages(exclude=["project","project.*"]),

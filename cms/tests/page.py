@@ -505,7 +505,34 @@ class PagesTestCase(CMSTestCase):
         page3 = self.move_page(page3, page4)
         self.assertEqual(page3.get_absolute_url(),
             self.get_pages_root()+'test-page-4/test-page-3/')
-    
+
+    def test_page_overwrite_urls(self):
+        page1 = create_page('test page 1', 'nav_playground.html', 'en',
+            published=True)
+
+        page2 = create_page('test page 2', 'nav_playground.html', 'en',
+            published=True, parent=page1)
+
+        page3 = create_page('test page 3', 'nav_playground.html', 'en',
+            published=True, parent=page2, overwrite_url='i-want-another-url')
+
+        self.assertEqual(page2.get_absolute_url(),
+            self.get_pages_root()+'test-page-2/')
+        self.assertEqual(page3.get_absolute_url(),
+            self.get_pages_root()+'i-want-another-url/')
+
+        title2 = page2.title_set.get()
+        title2.slug = 'page-test-2'
+        title2.save()
+
+        page2 = Page.objects.get(pk=page2.pk)
+        page3 = Page.objects.get(pk=page3.pk)
+
+        self.assertEqual(page2.get_absolute_url(),
+            self.get_pages_root()+'page-test-2/')
+        self.assertEqual(page3.get_absolute_url(),
+            self.get_pages_root()+'i-want-another-url/')
+
     def test_home_slug_not_accessible(self):
         with SettingsOverride(CMS_MODERATOR=False, CMS_PERMISSION=False):
             page = create_page('page', 'nav_playground.html', 'en', published=True)
@@ -515,6 +542,22 @@ class PagesTestCase(CMSTestCase):
             resp = self.client.get('/en/page/')
             self.assertEqual(resp.status_code, HttpResponseNotFound.status_code)
 
+    def test_public_home_page_replaced(self):
+        """Test that publishing changes to the home page doesn't move the public version"""
+        home = create_page('home', 'nav_playground.html', 'en', published = True, slug = 'home')
+        self.assertEqual(Page.objects.drafts().get_home().get_slug(), 'home')
+        home.publish()
+        self.assertEqual(Page.objects.public().get_home().get_slug(), 'home')
+        other = create_page('other', 'nav_playground.html', 'en', published = True, slug = 'other')
+        other.publish()
+        self.assertEqual(Page.objects.drafts().get_home().get_slug(), 'home')
+        self.assertEqual(Page.objects.public().get_home().get_slug(), 'home')
+        home = Page.objects.get(pk = home.id)
+        home.in_navigation = True
+        home.save()
+        home.publish()
+        self.assertEqual(Page.objects.drafts().get_home().get_slug(), 'home')
+        self.assertEqual(Page.objects.public().get_home().get_slug(), 'home')
 
 class NoAdminPageTests(CMSTestCase):
     urls = 'project.noadmin_urls'
@@ -532,3 +575,27 @@ class NoAdminPageTests(CMSTestCase):
         request = self.get_request('/admin/')
         page = get_page_from_request(request)
         self.assertEqual(page, None)
+
+class PreviousFilteredSiblingsTests(CMSTestCase):
+    def test_with_publisher(self):
+        home = create_page('home', 'nav_playground.html', 'en', published=True)
+        home.publish()
+        other = create_page('other', 'nav_playground.html', 'en', published=True)
+        other.publish()
+        other = Page.objects.get(pk=other.pk)
+        home = Page.objects.get(pk=home.pk)
+        self.assertEqual(other.get_previous_filtered_sibling(), home)
+        self.assertEqual(home.get_previous_filtered_sibling(), None)
+        
+    def test_multisite(self):
+        firstsite = Site.objects.create(name='first', domain='first.com')
+        secondsite = Site.objects.create(name='second', domain='second.com')
+        home = create_page('home', 'nav_playground.html', 'en', published=True, site=firstsite)
+        home.publish()
+        other = create_page('other', 'nav_playground.html', 'en', published=True, site=secondsite)
+        other.publish()
+        other = Page.objects.get(pk=other.pk)
+        home = Page.objects.get(pk=home.pk)
+        self.assertEqual(other.get_previous_filtered_sibling(), None)
+        self.assertEqual(home.get_previous_filtered_sibling(), None)
+        
