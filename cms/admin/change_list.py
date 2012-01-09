@@ -195,7 +195,7 @@ class CMSChangeList(ChangeList):
                 if len(children):
                     # TODO: WTF!?!
                     # The last one is not the last... wait, what?
-                    children[-1].last = False
+                    children.reverse()[0].last = False
                 page.menu_level = 0
                 root_pages.append(page)
                 if page.parent_id:
